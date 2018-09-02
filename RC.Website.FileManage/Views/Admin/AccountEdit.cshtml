@@ -1,0 +1,227 @@
+﻿@using System.Data
+@using RC.FileManage
+@{
+    ViewBag.Title = "应用服务账户";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .btnRadom { color: green; cursor: pointer; }
+</style>
+<link href="/Content/style.css" rel="stylesheet" type="text/css" />
+<table cellpadding="10" cellspacing="0" class="edit_table" style="width: 100%">
+    <tr style="display: none;">
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Id_Tip">Id</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-numberbox" customtype="easyui" data-options="required:true,missingMessage:'Id不能为空'"
+                id="txtId" name="Id" style="width: 100px;" title="Id" value="@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["Id"] : "")" />
+        </td>
+    </tr>
+    <tr style="display: none;">
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">GID</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtGID" name="GID"
+                style="width: 200px" title="GID" value="" />
+            <textarea id="hdn_GID" style="display: none;">@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["GID"] : "")</textarea>
+            <script type="text/javascript">
+                $(function () { $('#txtGID').textbox('setValue', $('#hdn_GID').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">应用名称</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtName" name="Name"
+                style="width: 400px" title="Name" value="" />
+            <textarea id="hdn_Name" style="display: none;">
+			@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["Name"] : "")
+			</textarea>
+            <script type="text/javascript">
+                $(function () { $('#txtName').textbox('setValue', $('#hdn_Name').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">AppKey</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtAppKey"
+                name="AppKey" style="width: 400px" title="AppKey" value="" />
+            <textarea id="hdn_AppKey" style="display: none;">
+			@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["AppKey"] : "")
+			</textarea><span class="btnRadom" for="txtAppKey">随机生成</span>
+            <script type="text/javascript">
+                $(function () { $('#txtAppKey').textbox('setValue', $('#hdn_AppKey').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">AppSecret</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtAppSecret"
+                name="AppSecret" style="width: 400px" title="AppSecret" value="" />
+            <textarea id="hdn_AppSecret" style="display: none;">
+			@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["AppSecret"] : "")
+			</textarea><span class="btnRadom" for="txtAppSecret">随机生成</span>
+            <script type="text/javascript">
+                $(function () { $('#txtAppSecret').textbox('setValue', $('#hdn_AppSecret').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr style="height: 35px">
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">应用状态 </span>：
+        </td>
+        <td class="panel-header td_right">
+            <input @Html.Raw(((DataTable)ViewBag.Data).Rows.Count > 0
+                         ? (((DataTable)ViewBag.Data).Rows[0]["IsEnable"].ToBoolean() ? " checked='checked' " : "")
+                         : "") id="IsEnable_1" name="IsEnable" type="radio" value="true" ></input>
+            <label for="IsEnable_1">
+                启用</label>&nbsp;
+            <input @Html.Raw(((DataTable)ViewBag.Data).Rows.Count > 0
+                           ? (((DataTable)ViewBag.Data).Rows[0]["IsEnable"].ToBoolean() ? "" : "  checked='checked' ")
+                         : "")
+                id="IsEnable_0" name="IsEnable" type="radio" value="false"></input>
+            <label for="IsEnable_0">
+                禁用</label>
+        </td>
+    </tr>
+    <tr style="height: 35px">
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">开启日志</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input @Html.Raw(((DataTable)ViewBag.Data).Rows.Count > 0
+                       ? (((DataTable)ViewBag.Data).Rows[0]["IsLog"].ToBoolean() ? " checked='checked' " : "")
+                       : "") id="IsLog_1" name="IsLog" type="radio" value="true" ></input>
+            <label for="IsLog_1">
+                启用</label>&nbsp;
+            <input @Html.Raw(((DataTable)ViewBag.Data).Rows.Count > 0
+                       ? (((DataTable)ViewBag.Data).Rows[0]["IsLog"].ToBoolean() ? "" : "  checked='checked' ")
+                       : "")
+                id="IsLog_0" name="IsLog" type="radio" value="false"></input>
+            <label for="IsLog_0">
+                禁用</label>
+        </td>
+    </tr>
+    <tr>
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">上传文件大小限制</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtMaxSize"
+                name="MaxSize" style="width: 400px" title="MaxSize" value="" />
+            <textarea id="hdn_MaxSize" style="display: none;">
+			@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["MaxSize"] : "")
+			</textarea><span>K (1M=1024K)</span>
+            <script type="text/javascript">
+                $(function () { $('#txtMaxSize').textbox('setValue', $('#hdn_MaxSize').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">上传文件后缀限制</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtExtension"
+                name="Extension" style="width: 400px" title="Extension" value="" />
+            <textarea id="hdn_Extension" style="display: none;">
+			@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["Extension"] : "")
+			</textarea><span>多个以"|"隔开，如：.jpg|.png|.gif|.bmp</span>
+            <script type="text/javascript">
+                $(function () { $('#txtExtension').textbox('setValue', $('#hdn_Extension').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr>
+        <td class="panel-header td_left">
+            <span class="fieldTip" id="Num_Tip">存放文件路径</span>：
+        </td>
+        <td class="panel-header td_right">
+            <input class="easyui-textbox" customtype="easyui" data-options="" id="txtSavePath"
+                name="SavePath" style="width: 400px" title="SavePath" value="" />
+            <textarea id="hdn_SavePath" style="display: none;">
+			@(((DataTable)ViewBag.Data).Rows.Count > 0 ? ((DataTable)ViewBag.Data).Rows[0]["SavePath"] : "")
+			</textarea><span></span>
+            <script type="text/javascript">
+                $(function () { $('#txtSavePath').textbox('setValue', $('#hdn_SavePath').val().trim()); });
+            </script>
+        </td>
+    </tr>
+    <tr class="tr_btns">
+        <td class="panel-header td_left">
+        </td>
+        <td class="panel-header td_right">
+            <a href="javascript:void(0)" id="btnsave" class="easyui-linkbutton" data-options="iconCls:'icon-save'">
+                保存 </a>&nbsp; <a href="javascript:void(0)" id="btnClose" class="easyui-linkbutton"
+                    data-options="iconCls:'icon-cancel'" onclick=" top.closeTab() ">关闭 </a>
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    $(function() {
+        $(".btnRadom").click(function() {
+            var th = $(this).attr("for");
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("GetGuid", "Account")",
+                dataType: "JSON",
+                data: {},
+                success: function(res) {
+                    $('#' + th).textbox('setValue', res.Body);
+                }
+            });
+
+        });
+        $("#btnsave").click(function() {
+            var txtId = $("[name='Id']").val();
+            var txtGID = $("[name='GID']").val();
+            var txtName = $("[name='Name']").val();
+            var txtAppKey = $("[name='AppKey']").val();
+            var txtAppSecret = $("[name='AppSecret']").val();
+            var txtIsEnable = $("[name='IsEnable']:checked").val();
+            var txtIsLog = $("[name='IsLog']:checked").val();
+            var txtMaxSize = $("[name='MaxSize']").val();
+            var txtExtension = $("[name='Extension']").val();
+            var txtSavePath = $("[name='SavePath']").val();
+        
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("AccountForm", "Account")",
+                dataType: "JSON",
+                data: {
+                    Id: txtId,
+                    GID: txtGID,
+                    Name: txtName,
+                    AppKey: txtAppKey,
+                    AppSecret: txtAppSecret,
+                    IsEnable: txtIsEnable,
+                    IsLog: txtIsLog,
+                    MaxSize:txtMaxSize,
+                    Extension:txtExtension,
+                    SavePath:txtSavePath
+                },
+                success: function(res) {
+                   if (res.IsSucess) {
+                       rc.msg.confirm("操作成功!<br/><br/>关闭当前窗口？<br/><br/>",
+                           function() {
+                               top.closeTab();
+                           });
+                   } else {
+                       rc.msg.alertErrorMsg(res.Body);
+                   }
+                }
+            });
+
+        });
+    }); 
+</script>

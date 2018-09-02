@@ -1,0 +1,15 @@
+E:\02_源代码\Source\成都人才_文件上传管理\RC.Website.FileManage\RC.FileManage\bin\Debug\RC.FileManage.dll
+E:\02_源代码\Source\成都人才_文件上传管理\RC.Website.FileManage\RC.FileManage\bin\Debug\RC.FileManage.pdb
+E:\02_源代码\Source\成都人才_文件上传管理\RC.Website.FileManage\RC.FileManage\obj\Debug\RC.FileManage.dll
+E:\02_源代码\Source\成都人才_文件上传管理\RC.Website.FileManage\RC.FileManage\obj\Debug\RC.FileManage.pdb
+E:\02_源代码\Source\成都人才_文件上传管理\RC.Website.FileManage\RC.FileManage\obj\Debug\RC.FileManage.csprojResolveAssemblyReference.cache
+G:\00.云服务器\02_产品程序\17_上传文件管理\RC.Website.FileManage\RC.FileManage\bin\Debug\RC.FileManage.dll
+G:\00.云服务器\02_产品程序\17_上传文件管理\RC.Website.FileManage\RC.FileManage\bin\Debug\RC.FileManage.pdb
+G:\00.云服务器\02_产品程序\17_上传文件管理\RC.Website.FileManage\RC.FileManage\obj\Debug\RC.FileManage.csprojResolveAssemblyReference.cache
+G:\00.云服务器\02_产品程序\17_上传文件管理\RC.Website.FileManage\RC.FileManage\obj\Debug\RC.FileManage.dll
+G:\00.云服务器\02_产品程序\17_上传文件管理\RC.Website.FileManage\RC.FileManage\obj\Debug\RC.FileManage.pdb
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManage\bin\Debug\RC.FileManage.dll
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManage\bin\Debug\RC.FileManage.pdb
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManage\obj\Debug\RC.FileManage.csprojResolveAssemblyReference.cache
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManage\obj\Debug\RC.FileManage.dll
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManage\obj\Debug\RC.FileManage.pdb

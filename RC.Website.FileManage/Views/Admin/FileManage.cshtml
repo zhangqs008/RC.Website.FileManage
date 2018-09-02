@@ -1,0 +1,254 @@
+﻿@{
+    ViewBag.Title = "接入文档";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    .panel-header { border-top: 0; border-left: 0; }
+    .tree-folder { background: url(/Scripts/jquery-easyui-1.5.5.7/themes/default/images/tree_icons.png) no-repeat -208px 0 !important; }
+    .ico { vertical-align: middle; margin-right: 3px; }
+    .btnoper { width: 16px; height: 16px; display: block; }
+    .btnoper-txt { display: inline-block; margin-left: 18px; color: black; }
+</style>
+<!--左侧部分-->
+<div id="west" data-options="region:'west',split:true,title:'目录导航'" style="padding: 0px;
+    border-left: 0; border-top: 0; border-bottom: 0; width: 250px;">
+    <ul id="fileTree" data-options="lines:true">
+    </ul>
+    <script type="text/javascript">
+        var _curGuid = "";
+        $('#fileTree').tree({
+            url: '@Url.Action("GetRoot", "FileManage")',
+            onBeforeExpand: function (node, param) {
+                $(this).tree('options').url = "@Url.Action("GetChildren", "FileManage")?state=open&id=" + node.id; 
+            },
+            onSelect: function (node, param) {
+                _curGuid = node.id;
+                Search();
+            }
+        });
+        function Search() {
+            $('#table').datagrid('options').url = '@Url.Action("GetFile", "FileManage")?_t=' +
+                new Date().getTime() +
+                '&guid=' +_curGuid +
+                '&searchType=' +$("[name='searchType']").val() +
+                '&keyword=' +escape($("[name='keyword']").val());
+            Reload();
+        }
+
+        //刷新 
+        function Reload() {
+            $('#table').datagrid('reload');
+            $('#table').datagrid('clearSelections');
+        }
+
+        //自适应缩放
+        function customResize() {
+            var width = $("#file-right").width();
+            var height = $(window).height()-$("#myToolbar").height()+30;
+            $('#table').datagrid('resize', { width: width, height: height });
+        }
+    </script>
+</div>
+<!--右侧部分-->
+<div data-options="region:'center'" style="border-top: 0; border-bottom: 0" id="file-right">
+    <div id="myToolbar" class="datagrid-toolbar">
+        <ul class="datagridMenu">
+            <li>
+                <select class="easyui-combobox" name="searchType" style="width: 110px;">
+                    <option value='name'>文件名</option>
+                    <option value='extension'>后缀名</option>
+                </select>
+            </li>
+            <li>
+                <input type="text" id="keyword" style="width: 300px;" name="keyword" class="easyui-textbox" />
+                <script type="text/javascript">
+
+                    $(function () {
+                        var defaultKeyword = "输入关键字以进行搜索(支持回车即搜索)";
+                        $("[name='keyword']").prev().val(defaultKeyword);
+                        //获取焦点
+                        $("[name='keyword']").prev().focus(function () {
+                            if ($.trim($(this).val()) == defaultKeyword) {
+                                $(this).val("");
+                            }
+                        });
+                        //失去焦点
+                        $("[name='keyword']").prev().blur(function () {
+                            if ($.trim($(this).val()) == "") {
+                                $(this).val(defaultKeyword);
+                            }
+                        });
+                        $("[name='keyword']").prev().bind('keydown', function (e) {
+                            var key = e.which;
+                            if (key == 13) {
+                                e.preventDefault();
+                                $(this).blur(); //失去焦点，给隐藏域赋值
+                                Search();
+                            }
+                        });
+                    });
+                </script>
+            </li>
+            <li><a onclick=" Search(); " href="javascript:void(0)" plain="true" class="easyui-linkbutton"
+                data-options="iconCls:'icon-search'" title="搜索">搜索</a> </li>
+            <li><a onclick=" Delete(); " href="javascript:void(0)" plain="true" class="easyui-linkbutton"
+                data-options="iconCls:'icon-remove'" title="删除">删除</a> </li>
+            <li><a onclick=" Reload(); " href="javascript:void(0)" plain="true" class="easyui-linkbutton"
+                data-options="iconCls:'icon-reload'" title="刷新">刷新</a> </li>
+        </ul>
+        <div style="clear: both">
+        </div>
+    </div>
+    <table id="table" class="easyui-datagrid" data-options="
+				title: '',
+                method: 'post',
+                singleSelect:true,
+				rownumbers: false, 
+				idField: 'Id',
+                fitColumns:true,
+				treeField: 'Title',
+                columns:[[ 
+              
+                 {field:'name',title:'名称',width:120,align:'left',formatter: function(value,row,index){return initname(row.value,row,index);}},
+                 {field:'fullpath',title:'路径',width:300,align:'left',formatter: function(value,row,index){return initfullpath(row.value,row,index);}},
+                 {field:'extension',title:'扩展名',width:60,align:'left',formatter: function(value,row,index){return initextension(row.value,row,index);}},
+                 {field:'length',title:'大小',width:60,align:'left',formatter: function(value,row,index){return initlength(row.value,row,index);}},
+                 {field:'creationtime',title:'创建时间',width:120,align:'left',formatter: function(value,row,index){return initcreationtime(row.value,row,index);}},
+                 {field:'oprate',title:'操作',width:60,align:'left',formatter: function(value,row,index){return initOperate(row.value,row,index);}}
+               
+                ]],
+                toolbar:'#myToolbar',
+                pagination:true,
+                onClickRow: onClickRow,
+
+                pageSize:20, 
+                border:0
+			">
+    </table>
+    <script type="text/javascript">
+        var editId = "";
+
+        //行单击事件
+        function onClickRow(index, row) {
+            editId = row.guid;
+        }
+
+        //删除
+        function Delete() {
+            if (editId <= 0) {
+                rc.msg.alertErrorMsg("请选择要操作的数据行");
+                return;
+            }
+            rc.msg.confirm("确定要删除该记录吗？",
+                function () {
+                    rc.loading.add();
+                    rc.ajax.post('@Url.Action("DelFile", "FileManage")',
+                        {
+                            data: {
+                                id: editId
+                            },
+                            success: function (response) {
+                                rc.loading.remove();
+                                if (response.IsSucess) {
+                                    Reload();
+                                     
+                                } else {
+                                    rc.msg.alertErrorMsg(response.Body);
+                                }
+                            }
+                        });
+                });
+        }
+
+        function initname(value, row, index) {
+            var ico = "";
+            switch (row.extension.replace(".", "").toLowerCase()) {
+                case "cs":
+                case "txt":
+                case "doc":
+                case "docx":
+                case "xls":
+                case "xlsx":
+                case "exe":
+                case "ppt":
+                case "dll":
+                case "pdf":
+                case "pptx":
+                case "zip":
+                case "rar":
+                case "jpg":
+                case "html":
+                case "cshtml":
+                case "config":
+                case "aspx":
+                case "png":
+                    ico = "<img class='ico' src='/Content/images/ext/" + row.extension.replace(".", "").toLowerCase() + ".png' />";
+                    break;
+                default:
+                    ico = "<img class='ico' src='/Content/images/ext/default.png' />";
+                    break;
+            }
+            return ico + row.name;
+        }
+
+        function initfullpath(value, row, index) {
+            return row.fullpath;
+        }
+
+        function initextension(value, row, index) {
+            return row.extension;
+        }
+        
+        var KBCount = 1024;
+        var MBCount = KBCount * 1024;
+        var GBCount = MBCount * 1024;
+        var TBCount = GBCount * 1024;
+        function initlength(value, row, index) {
+            var size = row.length; 
+            if (KBCount > size){return size+ "B";}
+            if (MBCount > size){return (size / KBCount).toFixed(2) + "KB";}
+            if (GBCount > size){return (size / MBCount).toFixed(2) + "MB";}
+            if (TBCount > size){return (size / GBCount) .toFixed(2)+ "GB";}
+            return (size / TBCount) .toFixed(2)+ "TB";
+        }
+
+        function initcreationtime(value, row, index) {
+            return fixJsonDate(row.creationtime,"yyyy-MM-dd HH:mm"); 
+        }
+        function initOperate(value, row, index) {
+            return "<a plain='true' class=''  href='@Url.Action("Preview", "File")/"+row.guid+"' target='_blank' title='预览'><span class='btnoper icons-application_put'><span class='btnoper-txt'>预览</span></a>";
+        }
+        function  fixJsonDate  (jsonDate, format) {// 发现实体转换的日期会多了8个小时，使用该方法会修正这8个小时
+            if (RegExp(/\d{4}-\d+-\d+\s+\d+:\d+:\d+/).test(jsonDate)) {
+                return jsonDate;
+            }
+            var date = null;
+            if (RegExp(/\d{4}\/\d+\/\d+\s+\d+:\d+:\d+/).test(jsonDate)) {
+                date = new Date(jsonDate);
+            } else {
+                if (jsonDate) {
+                    var strDate = jsonDate.replace("/Date(", "").replace(")/", "");
+                    try {
+                        date = new Date(parseInt(strDate) - (8 * 3600 * 1000));
+                    } catch(ex) {
+                    }
+                }
+            }
+            if (!date) {
+                return "";
+            }
+            date = { year: date.getFullYear(), month: date.getMonth() + 1, day: date.getDate(), hour: date.getHours(), minutes: date.getMinutes() };
+            switch (format) {
+            case '-':
+                return date.year + '-' + fixTime(date.month) + '-' + fixTime(date.day);
+            case 'zh':
+                return date.year + '年' + fixTime(date.month) + '月' + fixTime(date.day) + '日';
+            default:
+                return date.year + '-' + fixTime(date.month) + '-' + fixTime(date.day) + ' ' + fixTime(date.hour) + ':' + fixTime(date.minutes);
+            }
+            function fixTime(value) {
+                return value.toString().length > 1 ? value : "0" + value;
+            }
+        }
+    </script>
+</div>

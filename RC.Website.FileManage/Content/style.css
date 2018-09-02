@@ -1,0 +1,14 @@
+﻿* { font-size: 12px; padding: 0; margin: 0; }
+.tips, .fieldTips { margin: 3px 5px; color: green; display: inline-block; }
+/*.edit_table { border-collapse: collapse; }*/
+.edit_table td { padding: 3px; }
+.td_left { text-align: right; width: 12%; min-width: 140px; border-left: 0; border-right: 0; border-top: 0; font-weight: normal; background: none; }
+.td_right { text-align: left; border-left: 0; font-weight: normal; border-top: 0; background: none; }
+.datagridMenu { margin: 0; }
+.datagridMenu li { float: left; list-style: none; margin-right: 2px; }
+.sort_input { width: 40px; padding: 2px; margin: 0px; border: 0px; border: 1px #95B8E7 solid; border-radius: 5px; }
+.navmenu a { color: white; }
+.active { background: #eaf2ff !important; color: #000000 !important; filter: none; }
+.accordion-body { padding: 5px 0 !important; }
+.btn-operate { color: #000000; text-decoration: none; }
+.layout-panel-north .l-btn:hover { background: #eaf2ff !important; color: #000000 !important; filter: none; }

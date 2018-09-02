@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "接入文档";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style type="text/css">
+    body { font-size: 14px; }
+    h3 { padding: 0; margin: 0; font-size: 16px; }
+    hr { border: 1px solid #e3e3e3; }
+    ul { padding: 5px 10px; margin: 0; }
+    li { list-style: none; line-height: 1.6; }
+    .keyword { color: red; display: inline-block; margin: 0 3px; }
+    pre { display: block; padding: 9.5px; margin: 0 0 10px; font-size: 13px; line-height: 1.42857143; color: #333; word-break: break-all; word-wrap: break-word; background-color: #f5f5f5; border: 1px solid #ccc; border-radius: 4px; }
+    .panel-fit body { overflow: auto !important; }
+</style>
+<div style="padding: 10px">
+    <h3>
+        一、上传文件</h3>
+    <hr />
+    <ul>
+        <li>第1步：申请应用：向管理员申请接入应用的<span class="keyword">Appkey</span>和<span class="keyword">AppSecret</span>。</li>
+        <li>第2步：接口调用 <a href="/Uploadfiles/RC.Software.FileManager.rar" target="_blank">下载客户端调用示例</a></li>
+        <li>
+            <ul>
+                <li>1.接口地址：<span class="keyword"><a href="@(ViewBag.Url + "UploadFile.asmx")"target="_blank">@(ViewBag.Url + "UploadFile.asmx")</a></span>，将接口地址添加服务引用到你的项目。</li>
+                <li>2.调用方式：
+                    <pre>
+/// &lt;summary&gt;
+/// 上传文件
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;url&quot;&gt;接口路径&lt;/param&gt;
+/// &lt;param name=&quot;appkey&quot;&gt;由系统颁发&lt;/param&gt;
+/// &lt;param name=&quot;appsecret&quot;&gt;由系统颁发&lt;/param&gt;
+/// &lt;param name=&quot;filepath&quot;&gt;上传文件全路径&lt;/param&gt;
+/// &lt;param name=&quot;tableName&quot;&gt;业务关联表&lt;/param&gt;
+/// &lt;param name=&quot;tableKeyId&quot;&gt;业务表主键&lt;/param&gt;
+/// &lt;returns&gt;&lt;/returns&gt;
+protected string Uploadfile(string url, string appkey, string appsecret, string filepath, string tableName, string tableKeyId)
+{
+    var service = new UploadFile(); //webservice引用
+    service.Url = url;
+    var timestamp = DateTime.Now.ToString(&quot;yyyy-MM-dd HH:mm:ss&quot;);
+    var file = new FileInfo(txtFilepath.Text.Trim());
+    var bytes = new byte[file.Length];
+    using (var stream = file.OpenRead())
+    {
+        stream.Read(bytes, 0, Convert.ToInt32(file.Length));
+    }
+
+    var dic = new Dictionary&lt;string, string&gt; { { &quot;appkey&quot;, appkey }, { &quot;timestamp&quot;, timestamp } };
+    var sign = SignRequest(dic, appsecret);
+    var result = service.Upload(appkey, timestamp, sign, bytes, file.Name, tableName, tableKeyId);
+    return result;
+}
+</pre>
+                </li>
+                <li>3.签名算法：
+                    <pre>
+/// &lt;summary&gt;
+/// 接口签名算法
+/// &lt;/summary&gt;
+/// &lt;param name=&quot;parameters&quot;&gt;请求参数&lt;/param&gt;
+/// &lt;param name=&quot;secret&quot;&gt;由清山.NET市场信息部颁发&lt;/param&gt;
+/// &lt;returns&gt;&lt;/returns&gt;
+public static string <span class="keyword">SignRequest</span>(IDictionary&lt;string, string&gt; parameters, string secret)
+{
+    // 第一步：把字典按Key的字母顺序排序
+    IDictionary&lt;string, string&gt; sortedParams =
+        new SortedDictionary&lt;string, string&gt;(parameters, StringComparer.Ordinal);
+    var dem = sortedParams.GetEnumerator();
+
+    // 第二步：把所有参数名和参数值串在一起
+    var query = new System.Text.StringBuilder();
+
+    while (dem.MoveNext())
+    {
+        var key = dem.Current.Key;
+        var value = dem.Current.Value;
+        if (!string.IsNullOrEmpty(key) &amp;&amp; !string.IsNullOrEmpty(value)) query.Append(key).Append(value);
+    }
+
+    // 第三步：使用MD5/HMAC加密
+    query.Append(secret);
+    var md5 = System.Security.Cryptography.MD5.Create();
+    var bytes = md5.ComputeHash(System.Text.Encoding.UTF8.GetBytes(query.ToString()));
+
+
+    // 第四步：把二进制转化为大写的十六进制
+    var result = new System.Text.StringBuilder();
+    for (var i = 0; i &lt; bytes.Length; i++)
+        result.Append(bytes[i].ToString(&quot;X2&quot;));
+
+    return result.ToString();
+}
+</pre>
+                </li>
+                <li>4.返回结果
+                    <pre>
+{"IsSuccess":true,"Body":"97127bdee07648f79d5c0eefe0fdc965"}
+IsSuccess=true时，上传成功，Body为上传后文件的guid（取文件时需要）。
+IsSuccess=false时，上传失败，Body为上传失败原因。
+</pre>
+                </li>
+            </ul>
+        </li>
+    </ul>
+    <h3>
+        二、读取(下载)文件</h3>
+    <hr />
+    <ul>
+        <li>访问地址 <span class="keyword">@(ViewBag.Url + "File/Preview/[guid]")</span>，如：<a href="@(ViewBag.Url + "File/Preview/97127bdee07648f79d5c0eefe0fdc965")" target="_blank">@(ViewBag.Url + "File/Preview/97127bdee07648f79d5c0eefe0fdc965")</a></li></ul>
+</div>

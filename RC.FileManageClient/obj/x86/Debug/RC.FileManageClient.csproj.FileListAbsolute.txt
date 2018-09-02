@@ -1,0 +1,8 @@
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\bin\Debug\RC.FileManageClient.exe
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\bin\Debug\RC.FileManageClient.pdb
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\obj\x86\Debug\RC.FileManageClient.MainForm.resources
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\obj\x86\Debug\RC.FileManageClient.Properties.Resources.resources
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\obj\x86\Debug\RC.FileManageClient.csproj.GenerateResource.Cache
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\obj\x86\Debug\RC.FileManageClient.exe
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\obj\x86\Debug\RC.FileManageClient.pdb
+G:\00.云服务器\02_产品程序\RC.FileManage\RC.FileManageClient\bin\Debug\RC.FileManageClient.exe.config

@@ -1,0 +1,118 @@
+﻿@{
+    ViewBag.Title = "清山.NET上传文件管理系统-管理登录";
+    Layout = "~/Views/Shared/_LayoutNull.cshtml";
+}
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <link href="/Scripts/jquery-easyui-1.5.5.7/themes/default/easyui.css" rel="stylesheet"
+        type="text/css" />
+    <link href="/Scripts/jquery-easyui-1.5.5.7/themes/icon.css" rel="stylesheet" type="text/css" />
+    <link href="/Scripts/jquery-easyui-1.5.5.7/themes/icons-custom.css" rel="stylesheet"
+        type="text/css" />
+    <script src="/Scripts/jquery-easyui-1.5.5.7/jquery.min.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery-easyui-1.5.5.7/jquery.easyui.min.js" type="text/javascript"></script>
+    <script src="/Scripts/jquery-easyui-1.5.5.7/jquery.ezsyui.plugin.tab.js" type="text/javascript"></script>
+    <script src="/Scripts/rc.msg.js" type="text/javascript"></script>
+    <style type="text/css">
+        .btn-guide { width: 96%; text-align: left; }
+        .logo { font-size: 16px; font-weight: bold; color: #444; line-height: 25px; text-shadow: 0 0 10px #95b8e7; letter-spacing: 5px; display: block; margin-left: 10px; }
+        .titlebar { background: #e6efff; height: 30px; border-top: 0px; }
+        .login_item { margin: 20px auto; }
+        .login_item .cell-left { display: inline-block; width: 100px; text-align: right; }
+        #login { width: 360px; margin: 0 auto; text-align: left; border: 1px solid; border: 1px solid #444; border-radius: 10px; }
+       .easyui-validatebox { border-radius: 5px; padding: 3px 5px; }
+    </style>
+</head>
+<body class="easyui-layout">
+    <script src="/Scripts/rc.loading.js" type="text/javascript"></script>
+    <!--右侧部分-->
+    <div data-options="region:'center'" style="text-align: center; padding-top: 10%;
+        border-top: 0">
+        <div id="login">
+            <form id="loginForm" method="post">
+            <div class="login_item" style="font-size: 16px; text-align: center; font-weight: bold;">@ViewBag.Title</div>
+            <div class="login_item">
+                <span class="cell-left">用户名：</span><input type="text" name="LoginName" class="easyui-validatebox"
+                    data-options="required:true,missingMessage:'请填写用户名'" /></div>
+            <div class="login_item">
+                <span class="cell-left">密 码：</span><input type="password" name="LoginPwd" class="easyui-validatebox"
+                    data-options="required:true,missingMessage:'请填写密码'" /></div>
+            <div class="login_item">
+                <span class="cell-left"></span><a href="javascript:void(0)" class="easyui-linkbutton btnlogin"
+                    data-options="">登录</a>
+            </div>
+            <div class="login_item" style="text-align: center">
+                <span class="lblstatus"></span>
+            </div>
+            </form>
+        </div>
+    </div>
+    <!--底部部分-->
+    <div region="south" data-options="split:false" style="height: 30px;">
+        <div class="footer" style="color: #444; padding: 6px; text-align: center;">
+            <a href="http://www.miitbeian.gov.cn/" style="color: gray; text-decoration: none;
+                font-size: 12px" target="_blank">Copyright &#169; 2018 清山.NET All Rights Reserved.
+            </a>
+        </div>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+            $("[name='LoginName']").bind('keydown',function (e) {
+                    var key = e.which;
+                    if (key == 13) {
+                        e.preventDefault();
+                        $(this).blur();
+                        $("[name='LoginPwd']").focus();
+                    }
+                });
+            $("[name='LoginPwd']").bind('keydown',function (e) {
+                    var key = e.which;
+                    if (key == 13) {
+                        e.preventDefault(); 
+                        $(".btnlogin").trigger("click");
+                    }
+                });
+
+
+            $(".btnlogin").click(function () {
+                var userName = $("[name='LoginName']").val();
+                var password = $("[name='LoginPwd']").val();
+                if (userName == "") {
+                    rc.msg.alertErrorMsg("抱歉，请输入用户名");
+                    return;
+                }
+                if (password == "") {
+                    rc.msg.alertErrorMsg("抱歉，请输入用户密码");
+                    return;
+                }
+                
+                $(".lblstatus").text("处理中，请稍候...").css("color","green");
+                $.ajax({
+                    type: 'POST',
+                    url: "@Url.Action("LoginForm", "Home")",
+                    dataType: "JSON",
+                    data: {
+                        UserName:userName,
+                        Password:password
+                    },
+                    success: function(res) {
+                        if (res.IsSucess) {
+                            $(".lblstatus").text("跳转中，请稍候...").css("color","green");
+                            window.location =res.Body;
+                        } else {
+                            $(".lblstatus").text(res.Body).css("color","red");
+                            rc.msg.alertErrorMsg(res.Body);
+                        }
+                     
+                    }
+                });
+
+
+
+
+            });
+        })
+    </script>
+</body>
+</html>
